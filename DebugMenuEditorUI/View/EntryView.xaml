@@ -7,16 +7,16 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="DebugMenuEditorUI.View.EntryView"
              mc:Ignorable="d" Width="160" Height="280">
     <Grid>
-        <TextBlock Text="Display Name" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,0,0"/>
-        <TextBox Margin="10,31,10,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="22"/>
-        <TextBlock Text="Map Name"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,64,0,0"/>
-        <TextBox Margin="10,85,10,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="22"/>
-        <TextBlock Text="Room Index"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,118,0,0"/>
-        <wpfToolkit:ByteUpDown Margin="10,139,10,0" VerticalAlignment="Top" Height="22"/>
+        <TextBlock Text="Display Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <TextBox Margin="10,31,10,0" TextWrapping="Wrap" Text="{Binding Path=DisplayName}" VerticalAlignment="Top" Height="22"/>
+        <TextBlock Text="Map Name"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,64,0,0"/>
+        <TextBox Margin="10,85,10,0" TextWrapping="Wrap" Text="{Binding Path=MapName}" VerticalAlignment="Top" Height="22"/>
+        <TextBlock Text="Room Index"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,118,0,0"/>
+        <wpfToolkit:ByteUpDown Margin="10,139,10,0" Value="{Binding Path=RoomIndex}" VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Spawn Index"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,172,0,0"/>
-        <wpfToolkit:ByteUpDown Height="22" Margin="10,193,10,0" VerticalAlignment="Top"/>
+        <wpfToolkit:ByteUpDown Height="22" Margin="10,193,10,0" Value="{Binding Path=SpawnIndex}" VerticalAlignment="Top"/>
         <TextBlock Text="Loaded Layer"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,226,0,0"/>
-        <ComboBox Height="22" Margin="10,247,10,0" VerticalAlignment="Top">
+        <ComboBox Height="22" Margin="10,247,10,0" SelectedValue="{Binding LayerIndex}" VerticalAlignment="Top">
             <xctk:UsageContextEnum>Alphabetical</xctk:UsageContextEnum>
         </ComboBox>
 
