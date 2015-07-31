@@ -10,10 +10,30 @@ namespace DebugMenuEditorUI.ViewModel
         public const string ApplicationName = "Debug Menu Editor";
 
         #region Command Callbacks
-        public ICommand OnRequestNewFile;
-        public ICommand OnRequestFileOpen;
-        public ICommand OnRequestFileClose;
-        public ICommand OnRequestFileSave;
+        /// <summary> User has requested that we create a new <see cref="Menu"/> file from scratch. Save current, then create new. </summary>
+        public ICommand OnRequestNewFile
+        {
+            get { return new RelayCommand(x => CreateNewFile()); }
+        }
+
+        /// <summary> User has requested that we open a <see cref="Menu"/> file from disk. Ask user for file, save current, then load. </summary>
+        public ICommand OnRequestFileOpen
+        {
+            get { return new RelayCommand(x => OpenFile()); }
+        }
+
+        /// <summary> User has requested that we close the current file. Save if applicable, then close. </summary>
+        public ICommand OnRequestFileClose
+        {
+            get { return new RelayCommand(x => CloseFile(), x => LoadedFile != null); }
+        }
+
+        /// <summary> User has requested that we save the current file. </summary>
+        public ICommand OnRequestFileSave
+        {
+            get { return new RelayCommand(x => SaveFile(), x => LoadedFile != null); }
+        }
+
         public ICommand OnRequestFileSaveAs;
         public ICommand OnRequestApplicationClose;
         public ICommand OnRequestNewCategory;
@@ -26,6 +46,9 @@ namespace DebugMenuEditorUI.ViewModel
 
         #endregion
 
+        /// <summary>
+        /// What is the title of the <see cref="MainWindow"/>? Adjusted based on the name of the currently loaded file.
+        /// </summary>
         public string WindowTitle
         {
             get { return m_windowTitle; }
@@ -36,6 +59,9 @@ namespace DebugMenuEditorUI.ViewModel
             }
         }
 
+        /// <summary>
+        /// The currently loaded Debug Menu file, null if not loaded.
+        /// </summary>
         public Menu LoadedFile
         {
             get { return m_loadedFile; }
@@ -46,6 +72,8 @@ namespace DebugMenuEditorUI.ViewModel
             }
         }
 
+        private string m_windowTitle;
+        private Menu m_loadedFile;
 
         public MainWindowViewModel()
         {
