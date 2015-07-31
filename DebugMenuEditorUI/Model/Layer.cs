@@ -1,6 +1,6 @@
 ﻿namespace DebugMenuEditorUI.Model
 {
-    public enum Layer
+    public enum Layer : byte
     {
         Default = 0xFF,
         Layer0 = 0x00,

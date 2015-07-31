@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using GameFormatReader.Common;
+using System.ComponentModel;
+using System.Text;
 
 namespace DebugMenuEditorUI.Model
 {
@@ -85,14 +87,61 @@ namespace DebugMenuEditorUI.Model
         private string m_mapName;
         private byte m_roomIndex;
         private byte m_spawnIndex;
-        private Layer m_layerIndex = Layer.Default;
+        private Layer m_layerIndex;
 
-        public CategoryEntry() { }
+        public CategoryEntry()
+        {
+            LayerIndex = Layer.Default;
+        }
+
+        public void Load(EndianBinaryReader stream)
+        {
+            long streamPos = stream.BaseStream.Position;
+
+            DisplayName = Encoding.GetEncoding("shift-jis").GetString(stream.ReadBytesUntil(0));
+            stream.BaseStream.Position = streamPos + 0x21;
+
+            MapName = Encoding.GetEncoding("shift-jis").GetString(stream.ReadBytesUntil(0));
+            stream.BaseStream.Position = streamPos + 0x29;
+
+            RoomIndex = stream.ReadByte();
+            SpawnIndex = stream.ReadByte();
+            LayerIndex = (Layer)stream.ReadByte();
+        }
+
+        public void Save(EndianBinaryWriter stream)
+        {
+            // Write 0x20 bytes of the name in shift-jis encoded and then force null terminator.
+            byte[] encodedDisplayName = Encoding.GetEncoding("shift-jis").GetBytes(DisplayName);
+            for(int i = 0; i < 0x20; i++)
+            {
+                if (i < encodedDisplayName.Length)
+                    stream.Write((byte)encodedDisplayName[i]);
+                else
+                    stream.Write((byte)0);
+            }
+            stream.Write((byte)0); // Null terminator
+
+            byte[] encodedMapName = Encoding.GetEncoding("shift-jis").GetBytes(MapName);
+            for (int i = 0; i < 0x8; i++)
+            {
+                if (i < encodedMapName.Length)
+                    stream.Write((byte)encodedMapName[i]);
+                else
+                    stream.Write((byte)0);
+            }
+
+            stream.Write(RoomIndex);
+            stream.Write(SpawnIndex);
+            stream.Write((byte)LayerIndex);
+        }
 
         protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        
     }
 }
