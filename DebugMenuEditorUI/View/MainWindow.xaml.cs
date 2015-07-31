@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using DebugMenuEditorUI.ViewModel;
+using System.ComponentModel;
+using System.Windows;
 
 namespace DebugMenuEditorUI.View
 {
@@ -10,6 +12,11 @@ namespace DebugMenuEditorUI.View
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnMainWindowClosing(object sender, CancelEventArgs e)
+        {
+            ((MainWindowViewModel)DataContext).OnWindowClosing(sender, e);
         }
     }
 }

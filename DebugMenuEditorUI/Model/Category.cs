@@ -22,7 +22,7 @@ namespace DebugMenuEditorUI.Model
         /// <summary>
         /// Maximum length of a <see cref="DisplayName"/> entry as defined by the file structure.
         /// </summary>
-        public int DisplayNameMaxLength { get { return 0x1F; } }
+        public int DisplayNameMaxLength { get { return 0x20; } }
 
         /// <summary>
         /// Which entries does this category contain?
@@ -43,7 +43,6 @@ namespace DebugMenuEditorUI.Model
         public Category()
         {
             Entries = new BindingList<CategoryEntry>();
-            DisplayName = string.Empty;
         }
 
         protected void OnPropertyChanged(string propertyName)

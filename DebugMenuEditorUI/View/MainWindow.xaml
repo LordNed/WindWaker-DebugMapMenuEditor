@@ -4,11 +4,29 @@
         xmlns:wpfToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:view="clr-namespace:DebugMenuEditorUI.View"
         xmlns:viewModel="clr-namespace:DebugMenuEditorUI.ViewModel"
-        Title="{Binding WindowTitle}" Height="450" Width="595" MinWidth="380" MinHeight="450"  ResizeMode="CanResizeWithGrip">
+        Title="{Binding WindowTitle}" Height="450" Width="595" MinWidth="380" MinHeight="450"  ResizeMode="CanResizeWithGrip" Closing="OnMainWindowClosing">
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <Window.InputBindings>
+        <!-- Catch Input and redirect them to the RelayCommand which handles that event. -->
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding OnRequestNewFile}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OnRequestFileOpen}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding OnRequestFileSave}"/>
+        <KeyBinding Key="C" Modifiers="Alt" Command="{Binding OnRequestFileClose}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift"  Command="{Binding OnRequestFileSave}"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding OnRequestUndo}"/>
+        <KeyBinding Key="Y" Modifiers="Control" Command="{Binding OnRequestRedo}"/>
+        <KeyBinding Key="Delete" Command="{Binding OnRequestDeleteEntries}"/>
+    </Window.InputBindings>
+    
     <Grid>
         <DockPanel VerticalAlignment="Top" Height="20">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
+                    <MenuItem Header="_New" Command="{Binding OnRequestNewFile}"/>
+                    <Separator/>
                     <MenuItem Header="_Open" Command="{Binding OnRequestFileOpen}"/>
                     <MenuItem Header="_Close" Command="{Binding OnRequestFileClose}"/>
                     <MenuItem Header="_Save" Command="{Binding OnRequestFileSave}"/>
@@ -24,7 +42,7 @@
                     <MenuItem Header="_Paste Entry(s)" Command="{Binding OnRequestPasteEntries}"/>
                     <Separator/>
                     <MenuItem Header="_Delete Category" Command="{Binding OnRequestDeleteCategory}"/>
-                    <MenuItem Header="Delete E_ntry" Command="{Binding OnRequestDeleteEntry}"/>
+                    <MenuItem Header="Delete E_ntry(s)" Command="{Binding OnRequestDeleteEntries}"/>
                 </MenuItem>
                 <MenuItem Header="_Help" Command="{Binding OnRequestHelp}"/>
             </Menu>
@@ -39,7 +57,7 @@
             </Button>
             <Grid Margin="0,42,0,0">
                 <TextBlock Text="Category Name:" Padding="0,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
-                <TextBox HorizontalAlignment="Left" Margin="101,0,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="133" Height="22"/>
+                <TextBox HorizontalAlignment="Left" Margin="101,0,0,0" Text="{Binding Path=DisplayName}" MaxLength="{Binding Path=DisplayNameMaxLength}" VerticalAlignment="Top" Width="133" Height="22"/>
                 <Grid Margin="0,28,0,0" MinHeight="280">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

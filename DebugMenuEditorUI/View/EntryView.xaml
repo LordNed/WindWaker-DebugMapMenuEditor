@@ -8,9 +8,9 @@
              mc:Ignorable="d" Width="160" Height="280">
     <Grid>
         <TextBlock Text="Display Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
-        <TextBox Margin="10,31,10,0" TextWrapping="Wrap" Text="{Binding Path=DisplayName}" VerticalAlignment="Top" Height="22"/>
+        <TextBox Margin="10,31,10,0" TextWrapping="Wrap" Text="{Binding Path=DisplayName}" MaxLength="{Binding Path=DisplayNameMaxLength}" VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Map Name"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,64,0,0"/>
-        <TextBox Margin="10,85,10,0" TextWrapping="Wrap" Text="{Binding Path=MapName}" VerticalAlignment="Top" Height="22"/>
+        <TextBox Margin="10,85,10,0" TextWrapping="Wrap" Text="{Binding Path=MapName}" MaxLength="{Binding Path=MapNameMaxLength}"  VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Room Index"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,118,0,0"/>
         <wpfToolkit:ByteUpDown Margin="10,139,10,0" Value="{Binding Path=RoomIndex}" VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Spawn Index"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,172,0,0"/>
