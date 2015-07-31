@@ -89,6 +89,8 @@
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\CategoryEntry.cs" />
     <Compile Include="Model\Layer.cs" />
+    <Compile Include="ViewModel\CategoryEntryViewModel.cs" />
+    <Compile Include="ViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\Menu.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />

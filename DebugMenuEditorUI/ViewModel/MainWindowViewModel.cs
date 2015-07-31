@@ -119,9 +119,23 @@ namespace DebugMenuEditorUI.ViewModel
             {
                 m_loadedFile = value;
                 UpdateWindowTitle();
+
+                if(m_loadedFile != null)
+                {
+                    if (LoadedFile.Categories.Count > 0)
+                        CategoryViewModel.SelectedCategory = LoadedFile.Categories[0];
+                }
+                else
+                {
+                    CategoryViewModel.SelectedCategory = null;
+                }
+
                 OnPropertyChanged("LoadedFile");
             }
         }
+
+        public CategoryViewModel CategoryViewModel { get; private set;}
+        public CategoryEntryViewModel CategoryEntryViewModel { get; private set; }
 
         private string m_windowTitle;
         private string m_applicationStatus;
@@ -129,7 +143,8 @@ namespace DebugMenuEditorUI.ViewModel
 
         public MainWindowViewModel()
         {
-
+            CategoryViewModel = new CategoryViewModel();
+            CategoryEntryViewModel = new CategoryEntryViewModel();
         }
 
         /// <summary> User has requested that we create a new <see cref="Menu"/> file from scratch. Save current, then create new. </summary>
@@ -154,16 +169,16 @@ namespace DebugMenuEditorUI.ViewModel
                 string folderName = Path.GetDirectoryName(ofd.FileName);
                 string fileName = Path.GetFileName(ofd.FileName);
 
-                LoadedFile = new Menu();
-                LoadedFile.FileName = fileName;
-                LoadedFile.FolderPath = folderName;
-                UpdateWindowTitle();
+                Menu newMenu = new Menu();
+                newMenu.FileName = fileName;
+                newMenu.FolderPath = folderName;
 
                 try
                 {
                     using(EndianBinaryReader reader = new EndianBinaryReader(File.Open(ofd.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Endian.Big))
                     {
-                        LoadedFile.Load(reader);
+                        newMenu.Load(reader);
+                        LoadedFile = newMenu;
                     }
 
                 }

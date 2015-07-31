@@ -18,7 +18,7 @@ namespace DebugMenuEditorUI.Model
             set
             {
                 m_displayName = value;
-                OnPropertyChanged("Name");
+                OnPropertyChanged("DisplayName");
             }
         }
 
