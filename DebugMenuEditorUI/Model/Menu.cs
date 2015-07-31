@@ -28,7 +28,7 @@ namespace DebugMenuEditorUI.Model
         public Menu()
         {
             Categories = new BindingList<Category>();
-            FileName = "Untitled";
+            FileName = "Untitled.dat";
             FolderPath = string.Empty;
         }
 

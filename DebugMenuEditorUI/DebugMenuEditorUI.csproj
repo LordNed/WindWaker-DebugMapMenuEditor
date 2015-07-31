@@ -88,6 +88,7 @@
     <Compile Include="Model\Layer.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\Menu.cs" />
+    <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\EntryView.xaml.cs">
       <DependentUpon>EntryView.xaml</DependentUpon>
     </Compile>

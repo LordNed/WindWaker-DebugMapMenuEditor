@@ -44,7 +44,7 @@
                     <MenuItem Header="_Delete Category" Command="{Binding OnRequestDeleteCategory}"/>
                     <MenuItem Header="Delete E_ntry(s)" Command="{Binding OnRequestDeleteEntries}"/>
                 </MenuItem>
-                <MenuItem Header="_Help" Command="{Binding OnRequestHelp}"/>
+                <MenuItem Header="_Help" Click="OnShowHelpDialog"/>
             </Menu>
         </DockPanel>
         <Grid Margin="0,20,0,20">

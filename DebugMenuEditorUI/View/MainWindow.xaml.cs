@@ -18,5 +18,10 @@ namespace DebugMenuEditorUI.View
         {
             ((MainWindowViewModel)DataContext).OnWindowClosing(sender, e);
         }
+
+        private void OnShowHelpDialog(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
