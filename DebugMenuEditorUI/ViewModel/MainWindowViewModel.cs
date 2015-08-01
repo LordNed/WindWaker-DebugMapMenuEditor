@@ -1,4 +1,5 @@
 ﻿using DebugMenuEditorUI.Model;
+using GameFormatReader.Common;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
@@ -118,9 +119,22 @@ namespace DebugMenuEditorUI.ViewModel
             {
                 m_loadedFile = value;
                 UpdateWindowTitle();
+
+                if(m_loadedFile != null)
+                {
+                    if (LoadedFile.Categories.Count > 0)
+                        CategoryViewModel.SelectedCategory = LoadedFile.Categories[0];
+                }
+                else
+                {
+                    CategoryViewModel.SelectedCategory = null;
+                }
+
                 OnPropertyChanged("LoadedFile");
             }
         }
+
+        public CategoryViewModel CategoryViewModel { get; private set;}
 
         private string m_windowTitle;
         private string m_applicationStatus;
@@ -128,7 +142,8 @@ namespace DebugMenuEditorUI.ViewModel
 
         public MainWindowViewModel()
         {
-
+            CategoryViewModel = new CategoryViewModel();
+            UpdateWindowTitle();
         }
 
         /// <summary> User has requested that we create a new <see cref="Menu"/> file from scratch. Save current, then create new. </summary>
@@ -150,7 +165,26 @@ namespace DebugMenuEditorUI.ViewModel
                 ConfirmSaveDesireAndSave();
 
                 ApplicationStatus = string.Format("Loading {0}...", ofd.SafeFileName);
-                //... load
+                string folderName = Path.GetDirectoryName(ofd.FileName);
+                string fileName = Path.GetFileName(ofd.FileName);
+
+                Menu newMenu = new Menu();
+                newMenu.FileName = fileName;
+                newMenu.FolderPath = folderName;
+
+                try
+                {
+                    using(EndianBinaryReader reader = new EndianBinaryReader(File.Open(ofd.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Endian.Big))
+                    {
+                        newMenu.Load(reader);
+                        LoadedFile = newMenu;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ApplicationStatus = string.Format("Exception while loading: {0}", ex.ToString());
+                }
                 ApplicationStatus = string.Format("Loaded {0}", ofd.SafeFileName);
             }
         }
@@ -205,9 +239,22 @@ namespace DebugMenuEditorUI.ViewModel
 
             string folderName = Path.GetDirectoryName(filePath);
             string fileName = Path.GetFileName(filePath);
+            LoadedFile.FileName = fileName;
+            LoadedFile.FolderPath = folderName;
+            UpdateWindowTitle();
 
             ApplicationStatus = string.Format("Saving file {0}...", fileName);
-            // save it...
+            try
+            {
+                using(EndianBinaryWriter writer = new EndianBinaryWriter(File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite), Endian.Big))
+                {
+                    LoadedFile.Save(writer);
+                }
+            }
+            catch (Exception ex)
+            {
+                ApplicationStatus = string.Format("Exception while saving: {0}", ex.ToString());
+            }
 
             LoadedFile.FileName = fileName;
             ApplicationStatus = string.Format("Saved file {0}", LoadedFile.FileName);

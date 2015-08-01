@@ -4,20 +4,39 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wpfToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="DebugMenuEditorUI.View.EntryView"
-             mc:Ignorable="d" Width="160" Height="280">
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:Model="clr-namespace:DebugMenuEditorUI.Model" x:Class="DebugMenuEditorUI.View.EntryView"
+             mc:Ignorable="d" Width="164" Height="280">
     <Grid>
+        <!-- This uses a bit of a weird hack. Because all of the controls are
+        set to expand, and the parent container holding this View is set to Auto
+        when a control desires to expand, it pushes the view out. This is normally
+        not a problem, but it turns out that TextBoxes will auto-expand if the amount
+        of content you type in them overrides their ability to contain it. This is
+        not the desired behavior. To resolve this issue, the width of the text box is
+        bound to the width of the EnumControl which has no desire to expand. -->
         <TextBlock Text="Display Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
-        <TextBox Margin="10,31,10,0" TextWrapping="Wrap" Text="{Binding Path=DisplayName}" MaxLength="{Binding Path=DisplayNameMaxLength}" VerticalAlignment="Top" Height="22"/>
+        <TextBox Margin="10,31,10,0" Width="{Binding ElementName=widthOwner,Path=ActualWidth}" Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}" MaxLength="{Binding DisplayNameMaxLength}" VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Map Name"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,64,0,0"/>
-        <TextBox Margin="10,85,10,0" TextWrapping="Wrap" Text="{Binding Path=MapName}" MaxLength="{Binding Path=MapNameMaxLength}"  VerticalAlignment="Top" Height="22"/>
+        <TextBox Margin="10,85,10,0" Width="{Binding ElementName=widthOwner,Path=ActualWidth}" Text="{Binding MapName, UpdateSourceTrigger=PropertyChanged}" MaxLength="{Binding MapNameMaxLength}"  VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Room Index"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,118,0,0"/>
-        <wpfToolkit:ByteUpDown Margin="10,139,10,0" Value="{Binding Path=RoomIndex}" VerticalAlignment="Top" Height="22"/>
+        <xctk:ByteUpDown Margin="10,139,10,0" Value="{Binding RoomIndex}" VerticalAlignment="Top" Height="22"/>
         <TextBlock Text="Spawn Index"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,172,0,0"/>
-        <wpfToolkit:ByteUpDown Height="22" Margin="10,193,10,0" Value="{Binding Path=SpawnIndex}" VerticalAlignment="Top"/>
+        <xctk:ByteUpDown Height="22" Margin="10,193,10,0" Value="{Binding SpawnIndex}" VerticalAlignment="Top"/>
         <TextBlock Text="Loaded Layer"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,226,0,0"/>
-        <ComboBox Height="22" Margin="10,247,10,0" SelectedValue="{Binding LayerIndex}" VerticalAlignment="Top">
-            <xctk:UsageContextEnum>Alphabetical</xctk:UsageContextEnum>
+        <ComboBox x:Name="widthOwner" Height="22" Margin="10,247,10,0" SelectedValue="{Binding LayerIndex}" VerticalAlignment="Top">
+            <Model:Layer>Default</Model:Layer>
+            <Model:Layer>Layer0</Model:Layer>
+            <Model:Layer>Layer1</Model:Layer>
+            <Model:Layer>Layer2</Model:Layer>
+            <Model:Layer>Layer3</Model:Layer>
+            <Model:Layer>Layer4</Model:Layer>
+            <Model:Layer>Layer5</Model:Layer>
+            <Model:Layer>Layer6</Model:Layer>
+            <Model:Layer>Layer7</Model:Layer>
+            <Model:Layer>Layer8</Model:Layer>
+            <Model:Layer>Layer9</Model:Layer>
+            <Model:Layer>LayerA</Model:Layer>
+            <Model:Layer>LayerB</Model:Layer>
         </ComboBox>
 
     </Grid>
