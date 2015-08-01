@@ -17,7 +17,7 @@ namespace DebugMenuEditorUI.Model
             set
             {
                 m_displayName = value;
-                OnPropertyChanged("Name");
+                OnPropertyChanged("DisplayName");
             }
         }
 
@@ -43,7 +43,7 @@ namespace DebugMenuEditorUI.Model
             set
             {
                 m_roomIndex = value;
-                OnPropertyChanged("RoomNumber");
+                OnPropertyChanged("RoomIndex");
             }
         }
 

@@ -13,11 +13,27 @@ namespace DebugMenuEditorUI.ViewModel
             set
             {
                 m_selectedCategory = value;
+                
+                if(SelectedCategory != null && SelectedCategory.Entries.Count > 0)
+                {
+                    SelectedEntryViewModel.SelectedEntry = SelectedCategory.Entries[0];
+                }
+                else
+                {
+                    SelectedEntryViewModel.SelectedEntry = null;
+                }
+
                 OnPropertyChanged("SelectedCategory");
             }
         }
 
+        public CategoryEntryViewModel SelectedEntryViewModel {get; private set;}
         private Category m_selectedCategory;
+
+        public CategoryViewModel()
+        {
+            SelectedEntryViewModel = new CategoryEntryViewModel();
+        }
 
 
         protected void OnPropertyChanged(string propertyName)

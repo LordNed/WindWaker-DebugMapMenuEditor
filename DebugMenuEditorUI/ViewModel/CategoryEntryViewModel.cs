@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DebugMenuEditorUI.Model;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DebugMenuEditorUI.ViewModel
 {
@@ -11,6 +7,17 @@ namespace DebugMenuEditorUI.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public CategoryEntry SelectedEntry
+        {
+            get { return m_selectedEntry; }
+            set
+            {
+                m_selectedEntry = value;
+                OnPropertyChanged("SelectedEntry");
+            }
+        }
+
+        private CategoryEntry m_selectedEntry;
 
         protected void OnPropertyChanged(string propertyName)
         {

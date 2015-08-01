@@ -55,9 +55,9 @@
             <Button HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Height="22" Width="22">
                 <TextBlock Text="x" Padding="0,0,0,2"/>
             </Button>
-            <Grid Margin="0,42,0,0" DataContext="{Binding Path=CategoryViewModel.SelectedCategory}">
+            <Grid Margin="0,42,0,0" DataContext="{Binding Path=CategoryViewModel}">
                 <TextBlock Text="Category Name:" Padding="0,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
-                <TextBox HorizontalAlignment="Left" Margin="101,0,0,0" Text="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}" MaxLength="{Binding Path=DisplayNameMaxLength}" VerticalAlignment="Top" Width="133" Height="22"/>
+                <TextBox HorizontalAlignment="Left" Margin="101,0,0,0" DataContext="{Binding Path=SelectedCategory}" Text="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}" MaxLength="{Binding Path=DisplayNameMaxLength}" VerticalAlignment="Top" Width="133" Height="22"/>
                 <Grid Margin="0,28,0,0" MinHeight="280">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -66,7 +66,7 @@
                     </Grid.ColumnDefinitions>
                     <!-- Left Panel (List of Entries) -->
                     <Grid Margin="5,0,0,0">
-                    <ListBox Grid.Column="0" Margin="0,0,0,24"/>
+                        <ListBox Grid.Column="0" Margin="0,0,0,24" SelectedItem="{Binding Path=SelectedEntryViewModel.SelectedEntry}" ItemsSource="{Binding Path=SelectedCategory.Entries}" DisplayMemberPath="DisplayName"/>
                         <StackPanel Orientation="Horizontal" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                             <Button Content="+" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0"/>
                             <Button Content="-" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0"/>
@@ -77,7 +77,7 @@
                     <GridSplitter Grid.Column="1" Width="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                     
                     <!-- Inspector Panel for Current Selection -->
-                    <view:EntryView Grid.Column="2" Width="Auto" Height="Auto"/>
+                    <view:EntryView Grid.Column="2" Width="Auto" Height="Auto" DataContext="{Binding Path=SelectedEntryViewModel.SelectedEntry}"/>
                 </Grid>
             </Grid>
         </Grid>

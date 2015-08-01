@@ -135,7 +135,6 @@ namespace DebugMenuEditorUI.ViewModel
         }
 
         public CategoryViewModel CategoryViewModel { get; private set;}
-        public CategoryEntryViewModel CategoryEntryViewModel { get; private set; }
 
         private string m_windowTitle;
         private string m_applicationStatus;
@@ -144,7 +143,7 @@ namespace DebugMenuEditorUI.ViewModel
         public MainWindowViewModel()
         {
             CategoryViewModel = new CategoryViewModel();
-            CategoryEntryViewModel = new CategoryEntryViewModel();
+            UpdateWindowTitle();
         }
 
         /// <summary> User has requested that we create a new <see cref="Menu"/> file from scratch. Save current, then create new. </summary>
