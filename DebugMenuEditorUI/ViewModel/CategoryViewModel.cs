@@ -35,7 +35,6 @@ namespace DebugMenuEditorUI.ViewModel
             SelectedEntryViewModel = new CategoryEntryViewModel();
         }
 
-
         protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)

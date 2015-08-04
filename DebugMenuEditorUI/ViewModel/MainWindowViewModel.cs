@@ -51,11 +51,11 @@ namespace DebugMenuEditorUI.ViewModel
             get { return new RelayCommand(x => QuitApplication()); }
         }
 
-        ///// <summary> Add a new category to the loaded <see cref="Menu"/>. </summary>
-        //public ICommand OnRequestNewCategory
-        //{
-        //    get { return new RelayCommand(x => LoadedFile.CreateNewCategory(), x => LoadedFile != null); }
-        //}
+        /// <summary> Add a new category to the loaded <see cref="Menu"/>. </summary>
+        public ICommand OnRequestNewCategory
+        {
+            get { return new RelayCommand(x => AddCategory(), x => LoadedFile != null); }
+        }
 
         ///// <summary> Add a new entry to the currently selected category. </summary>
         //public ICommand OnRequestNewEntry
@@ -69,11 +69,11 @@ namespace DebugMenuEditorUI.ViewModel
         ///// <summary> Take the current entries in the copy buffer and paste them into the currently selected <see cref="Category"/>. </summary>
         //public ICommand OnRequestPasteEntries;
 
-        ///// <summary> Delete the currently selected category. </summary>
-        //public ICommand OnRequestDeleteCategory
-        //{
-        //    get { return new RelayCommand(x => LoadedFile.Categories.Remove(LoadedFile.SelectedCategory), x => LoadedFile != null && LoadedFile.SelectedCategory != null); }
-        //}
+        /// <summary> Delete the currently selected category. </summary>
+        public ICommand OnRequestDeleteCategory
+        {
+            get { return new RelayCommand(x => RemoveCategory(), x => LoadedFile != null && CategoryViewModel.SelectedCategory != null); }
+        }
 
         ///// <summary> Delete the currently selected entries from the currently selected category. </summary>
         //public ICommand OnRequestDeleteEntries
@@ -290,6 +290,34 @@ namespace DebugMenuEditorUI.ViewModel
                     SaveFile();
                 }
             }
+        }
+
+        private void AddCategory()
+        {
+            if (LoadedFile == null)
+                throw new InvalidOperationException("Cannot add category when no file is loaded!");
+
+            Category newCategory = new Category();
+            LoadedFile.Categories.Add(newCategory);
+            CategoryViewModel.SelectedCategory = newCategory;
+        }
+
+        private void RemoveCategory()
+        {
+            if(LoadedFile == null)
+                throw new InvalidOperationException("Cannot remove category when no file is loaded!");
+
+            // Get the index of the currently selected one so that when we remove it, we can select the category one before.
+            int index = LoadedFile.Categories.IndexOf(CategoryViewModel.SelectedCategory);
+            LoadedFile.Categories.RemoveAt(index);
+
+            // Removing the category shifts everyone up by one, so if its still in a valid range, use it, otherwise subtract one (ie: was last thing)
+            // and ensure that is in range.
+            if(index >= LoadedFile.Categories.Count)
+                index--;
+
+            if(index >= 0)
+                CategoryViewModel.SelectedCategory = LoadedFile.Categories[index];
         }
 
         internal void OnWindowClosing(object sender, CancelEventArgs e)
