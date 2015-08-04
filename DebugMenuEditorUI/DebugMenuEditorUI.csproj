@@ -38,6 +38,7 @@
       <HintPath>..\EndianBinaryStreams.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -53,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\ScrollIntoViewForListBox.cs" />
     <Page Include="View\EntryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
