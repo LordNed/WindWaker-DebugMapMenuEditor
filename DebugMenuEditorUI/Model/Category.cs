@@ -46,6 +46,7 @@ namespace DebugMenuEditorUI.Model
         public Category()
         {
             Entries = new BindingList<CategoryEntry>();
+            DisplayName = "Unnamed Category";
         }
 
         public void Load(EndianBinaryReader stream)
