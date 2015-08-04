@@ -92,6 +92,7 @@ namespace DebugMenuEditorUI.Model
         public CategoryEntry()
         {
             LayerIndex = Layer.Default;
+            DisplayName = "Unnamed Entry";
         }
 
         public void Load(EndianBinaryReader stream)
@@ -141,7 +142,5 @@ namespace DebugMenuEditorUI.Model
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        
     }
 }

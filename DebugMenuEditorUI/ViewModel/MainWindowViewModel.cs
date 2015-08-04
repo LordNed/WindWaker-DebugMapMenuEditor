@@ -57,11 +57,11 @@ namespace DebugMenuEditorUI.ViewModel
             get { return new RelayCommand(x => AddCategory(), x => LoadedFile != null); }
         }
 
-        ///// <summary> Add a new entry to the currently selected category. </summary>
-        //public ICommand OnRequestNewEntry
-        //{
-        //    get { return new RelayCommand(x => LoadedFile.SelectedCategory.CreateNewEntry(), x => LoadedFile != null && LoadedFile.SelectedCategory != null); }
-        //}
+        /// <summary> Add a new entry to the currently selected category. </summary>
+        public ICommand OnRequestNewEntry
+        {
+            get { return new RelayCommand(x => CreateNewEntry(), x => LoadedFile != null && CategoryViewModel.SelectedCategory != null); }
+        }
 
         ///// <summary> Take the currently selected entries from the List and add them to the copy buffer. </summary>
         //public ICommand OnRequestCopyEntries;
@@ -75,11 +75,11 @@ namespace DebugMenuEditorUI.ViewModel
             get { return new RelayCommand(x => RemoveCategory(), x => LoadedFile != null && CategoryViewModel.SelectedCategory != null); }
         }
 
-        ///// <summary> Delete the currently selected entries from the currently selected category. </summary>
-        //public ICommand OnRequestDeleteEntries
-        //{
-        //    get { return new RelayCommand(x => LoadedFile.SelectedCategory.RemoveRange(LoadedFile.SelectedCategory.SelectedEntries)); }
-        //}
+        /// <summary> Delete the currently selected entries from the currently selected category. </summary>
+        public ICommand OnRequestDeleteEntries
+        {
+            get { return new RelayCommand(x => RemoveEntry(), x=> LoadedFile != null && CategoryViewModel.SelectedEntryViewModel.SelectedEntry != null); }
+        }
 
         #endregion
 
@@ -142,7 +142,7 @@ namespace DebugMenuEditorUI.ViewModel
 
         public MainWindowViewModel()
         {
-            CategoryViewModel = new CategoryViewModel();
+            CategoryViewModel = new CategoryViewModel(this);
             UpdateWindowTitle();
         }
 
@@ -318,6 +318,33 @@ namespace DebugMenuEditorUI.ViewModel
 
             if(index >= 0)
                 CategoryViewModel.SelectedCategory = LoadedFile.Categories[index];
+        }
+
+        private void CreateNewEntry()
+        {
+            if (LoadedFile == null || CategoryViewModel.SelectedCategory == null)
+                throw new InvalidOperationException("Cannot add entry to unloaded file or null category!");
+
+            CategoryEntry entry = new CategoryEntry();
+            CategoryViewModel.SelectedCategory.Entries.Add(entry);
+            CategoryViewModel.SelectedEntryViewModel.SelectedEntry = entry;
+        }
+
+        private void RemoveEntry()
+        {
+            if (LoadedFile == null || CategoryViewModel.SelectedCategory == null)
+                throw new InvalidOperationException("Cannot remove entry from unloaded file or null category!");
+
+            // Get the index of the currently selected one(s)
+            int index = CategoryViewModel.SelectedCategory.Entries.IndexOf(CategoryViewModel.SelectedEntryViewModel.SelectedEntry);
+            CategoryViewModel.SelectedCategory.Entries.RemoveAt(index);
+
+            // It shifted us up by one, so if still in valid range, use it, otherwise we subtract one (ie: it was the last one)
+            if (index >= CategoryViewModel.SelectedCategory.Entries.Count)
+                index--;
+
+            if (index >= 0)
+                CategoryViewModel.SelectedEntryViewModel.SelectedEntry = CategoryViewModel.SelectedCategory.Entries[index];
         }
 
         internal void OnWindowClosing(object sender, CancelEventArgs e)

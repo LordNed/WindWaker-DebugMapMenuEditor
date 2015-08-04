@@ -28,11 +28,13 @@ namespace DebugMenuEditorUI.ViewModel
         }
 
         public CategoryEntryViewModel SelectedEntryViewModel {get; private set;}
+        public MainWindowViewModel Parent { get; private set; }
         private Category m_selectedCategory;
 
-        public CategoryViewModel()
+        public CategoryViewModel(MainWindowViewModel parent)
         {
             SelectedEntryViewModel = new CategoryEntryViewModel();
+            Parent = parent;
         }
 
         protected void OnPropertyChanged(string propertyName)
