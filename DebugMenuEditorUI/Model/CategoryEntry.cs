@@ -112,17 +112,17 @@ namespace DebugMenuEditorUI.Model
 
         public void Save(EndianBinaryWriter stream)
         {
-            // Write 0x20 bytes of the name in shift-jis encoded and then force null terminator.
+            // Write 0x21 bytes of the display name (shift-jis encoded)
             byte[] encodedDisplayName = Encoding.GetEncoding("shift-jis").GetBytes(DisplayName);
-            for(int i = 0; i < 0x20; i++)
+            for(int i = 0; i < 0x21; i++)
             {
                 if (i < encodedDisplayName.Length)
                     stream.Write((byte)encodedDisplayName[i]);
                 else
                     stream.Write((byte)0);
             }
-            stream.Write((byte)0); // Null terminator
 
+            // Write the 8 bytes of the map name (shift-jis encoded, though all map names in existing game use ASCI)
             byte[] encodedMapName = Encoding.GetEncoding("shift-jis").GetBytes(MapName);
             for (int i = 0; i < 0x8; i++)
             {

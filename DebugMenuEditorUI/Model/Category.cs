@@ -78,8 +78,8 @@ namespace DebugMenuEditorUI.Model
 
         public void Save(EndianBinaryWriter stream, ref long entryOffsetStart)
         {
-            // Write the first 0x20 characters of the DisplayName. DisplayName should be limited to 0x20 but we're going to
-            // ensure that it is by not writing any more than that!
+            // Write the first 0x20 characters of the DisplayName. The data is converted into shift-jis which can take up to two bytes per
+            // character depending on the symbol. ASCII should take the usual one.
             long streamPos = stream.BaseStream.Position;
             byte[] encodedName = Encoding.GetEncoding("shift-jis").GetBytes(DisplayName);
             for (int i = 0; i < 0x20; i++)
