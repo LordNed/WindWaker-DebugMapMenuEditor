@@ -2,9 +2,11 @@
 using GameFormatReader.Common;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace DebugMenuEditorUI.ViewModel
@@ -109,6 +111,22 @@ namespace DebugMenuEditorUI.ViewModel
             }
         }
 
+        public CollectionViewSource CollViewSource { get; set; }
+
+        public string SearchFilter
+        {
+            get { return m_searchFilter; }
+            set
+            {
+                m_searchFilter = value;
+                if (!string.IsNullOrEmpty(m_searchFilter))
+                    AddFilter();
+
+                CollViewSource.View.Refresh();
+                OnPropertyChanged("SearchFilter");
+            }
+        }
+
         /// <summary>
         /// The currently loaded Debug Menu file, null if not loaded.
         /// </summary>
@@ -124,6 +142,16 @@ namespace DebugMenuEditorUI.ViewModel
                 {
                     if (LoadedFile.Categories.Count > 0)
                         CategoryViewModel.SelectedCategory = LoadedFile.Categories[0];
+
+                    // Update our collection source which contains a list of all entries from all categories.
+                    List<CategoryEntry> allEntries = new List<CategoryEntry>();
+                    foreach(var cat in LoadedFile.Categories)
+                    {
+                        foreach (var entry in cat.Entries)
+                            allEntries.Add(entry);
+                    }
+
+                    CollViewSource.Source = allEntries;
                 }
                 else
                 {
@@ -138,11 +166,13 @@ namespace DebugMenuEditorUI.ViewModel
 
         private string m_windowTitle;
         private string m_applicationStatus;
+        private string m_searchFilter;
         private Menu m_loadedFile;
 
         public MainWindowViewModel()
         {
             CategoryViewModel = new CategoryViewModel(this);
+            CollViewSource = new CollectionViewSource();
             UpdateWindowTitle();
         }
 
@@ -345,6 +375,26 @@ namespace DebugMenuEditorUI.ViewModel
 
             if (index >= 0)
                 CategoryViewModel.SelectedEntryViewModel.SelectedEntry = CategoryViewModel.SelectedCategory.Entries[index];
+        }
+
+        private void AddFilter()
+        {
+            CollViewSource.Filter -= Filter;
+            CollViewSource.Filter += Filter;
+        }
+
+        private void Filter(object sender, FilterEventArgs e)
+        {
+            var src = e.Item as CategoryEntry;
+            e.Accepted = false;
+
+            if (src == null)
+                return;
+
+            if (src.DisplayName.Contains(SearchFilter))
+                e.Accepted = true;
+            else if (src.MapName.Contains(SearchFilter))
+                e.Accepted = true;
         }
 
         internal void OnWindowClosing(object sender, CancelEventArgs e)
