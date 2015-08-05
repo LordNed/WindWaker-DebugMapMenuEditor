@@ -6,11 +6,11 @@
         xmlns:viewModel="clr-namespace:DebugMenuEditorUI.ViewModel"
         xmlns:behaviors="clr-namespace:DebugMenuEditorUI.Behaviors"
         xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        Title="{Binding WindowTitle}" Height="450" Width="595" MinWidth="380" MinHeight="450"  ResizeMode="CanResizeWithGrip" Closing="OnMainWindowClosing" Loaded="Window_Loaded">
+        Title="{Binding WindowTitle}" Height="450" Width="595" MinWidth="380" MinHeight="450"  ResizeMode="CanResizeWithGrip" Closing="OnMainWindowClosing" Loaded="Window_Loaded" Icon="/DebugMenuEditorUI;component/Resources/ApplicationIcon.ico">
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
     </Window.DataContext>
-    
+
     <Window.InputBindings>
         <!-- Catch Input and redirect them to the RelayCommand which handles that event. -->
         <KeyBinding Key="N" Modifiers="Control" Command="{Binding OnRequestNewFile}"/>
@@ -22,7 +22,7 @@
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding OnRequestRedo}"/>
         <KeyBinding Key="Delete" Command="{Binding OnRequestDeleteEntries}"/>
     </Window.InputBindings>
-    
+
     <Grid>
         <DockPanel VerticalAlignment="Top" Height="20">
             <Menu DockPanel.Dock="Top">
@@ -75,14 +75,14 @@
                             </interactivity:Interaction.Behaviors>
                         </ListBox>
                         <StackPanel Orientation="Horizontal" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                            <Button Content="+" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0" Command="{Binding Path=Parent.OnRequestNewEntry}"/>
+                            <Button Content="+" BorderBrush="{x:Null}" Command="{Binding Path=Parent.OnRequestNewEntry}" BorderThickness="0" Width="22" Margin="0" Background="#FF4600FF" Foreground="{x:Null}" Height="22"/>
                             <Button Content="-" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0" Command="{Binding Path=Parent.OnRequestDeleteEntries}"/>
                         </StackPanel>
                     </Grid>
-                    
+
                     <!-- Splitter for Resizing -->
                     <GridSplitter Grid.Column="1" Width="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                    
+
                     <!-- Inspector Panel for Current Selection -->
                     <view:EntryView Grid.Column="2" Width="Auto" Height="Auto" DataContext="{Binding Path=SelectedEntryViewModel.SelectedEntry}"/>
                 </Grid>

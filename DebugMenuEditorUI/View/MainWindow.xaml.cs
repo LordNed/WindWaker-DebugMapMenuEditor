@@ -24,7 +24,7 @@ namespace DebugMenuEditorUI.View
 
         private void OnShowHelpDialog(object sender, RoutedEventArgs e)
         {
-
+            System.Diagnostics.Process.Start("https://github.com/LordNed/WindWaker-DebugMapMenuEditor/wiki");
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

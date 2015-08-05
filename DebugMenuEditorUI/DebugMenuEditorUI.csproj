@@ -114,6 +114,13 @@
   <ItemGroup>
     <Resource Include="Resources\SearchIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\add_category_icon.png" />
+    <Resource Include="Resources\add_entry_icon.png" />
+    <Resource Include="Resources\ApplicationIcon.ico" />
+    <Resource Include="Resources\delete_category_icon.png" />
+    <Resource Include="Resources\delete_entry_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
