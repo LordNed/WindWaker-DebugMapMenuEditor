@@ -55,6 +55,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behaviors\ScrollIntoViewForListBox.cs" />
+    <Page Include="Themes\ImageButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\EntryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -67,6 +71,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\CategoryEntry.cs" />
     <Compile Include="Model\Layer.cs" />
@@ -121,6 +126,7 @@
     <Resource Include="Resources\delete_category_icon.png" />
     <Resource Include="Resources\delete_entry_icon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

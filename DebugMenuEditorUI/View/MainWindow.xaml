@@ -5,6 +5,7 @@
         xmlns:view="clr-namespace:DebugMenuEditorUI.View"
         xmlns:viewModel="clr-namespace:DebugMenuEditorUI.ViewModel"
         xmlns:behaviors="clr-namespace:DebugMenuEditorUI.Behaviors"
+        xmlns:controls="clr-namespace:DebugMenuEditorUI.Controls"
         xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="{Binding WindowTitle}" Height="450" Width="595" MinWidth="380" MinHeight="450"  ResizeMode="CanResizeWithGrip" Closing="OnMainWindowClosing" Loaded="Window_Loaded" Icon="/DebugMenuEditorUI;component/Resources/ApplicationIcon.ico">
     <Window.DataContext>
@@ -75,8 +76,8 @@
                             </interactivity:Interaction.Behaviors>
                         </ListBox>
                         <StackPanel Orientation="Horizontal" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                            <Button Content="+" BorderBrush="{x:Null}" Command="{Binding Path=Parent.OnRequestNewEntry}" BorderThickness="0" Width="22" Margin="0" Background="#FF4600FF" Foreground="{x:Null}" Height="22"/>
-                            <Button Content="-" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0" Command="{Binding Path=Parent.OnRequestDeleteEntries}"/>
+                            <controls:ImageButton Command="{Binding Parent.OnRequestNewEntry}" Width="22" Height="22" NormalImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" Style="{DynamicResource ButtonStyleOne}" ImageSize="22" DisabledImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" HoverImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" PressedImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" Margin="0" />
+                            <Button Content="-" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0" Command="{Binding Parent.OnRequestDeleteEntries}"/>
                         </StackPanel>
                     </Grid>
 
