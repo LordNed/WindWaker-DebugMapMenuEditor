@@ -247,8 +247,19 @@ namespace DebugMenuEditorUI.ViewModel
         {
             CollViewSource = new CollectionViewSource();
             SelectedEntries = new ObservableCollection<CategoryEntry>();
+            SelectedEntries.CollectionChanged += SelectedEntries_CollectionChanged;
 
             UpdateWindowTitle();
+        }
+
+        void SelectedEntries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // Only set the selected entry if we have one item selected. Otherwise it sets it to null
+            // as we don't support multi-entry editing.
+            if (SelectedEntries.Count == 1)
+                SelectedEntry = SelectedEntries[0];
+            else
+                SelectedEntry = null;
         }
 
         #region New, Open, Save, Save As, Load
@@ -422,9 +433,13 @@ namespace DebugMenuEditorUI.ViewModel
             CategoryEntry entry = new CategoryEntry();
             SelectedCategory.Entries.Add(entry);
 
+            // Add it to our collection view source so it shows up in the filtered results...
+            ((List<CategoryEntry>)CollViewSource.Source).Add(entry);
+
             // Clear the list of currently selected entries and then add the newly created one as the only selected one.
             SelectedEntries.Clear();
             SelectedEntries.Add(entry);
+
         }
 
         private void RemoveEntry()

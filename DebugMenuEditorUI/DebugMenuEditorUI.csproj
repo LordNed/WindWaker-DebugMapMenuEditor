@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
     <Compile Include="Behaviors\ScrollIntoViewForListBox.cs" />
     <Page Include="Themes\ImageButton.xaml">
       <SubType>Designer</SubType>
@@ -75,9 +76,11 @@
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\CategoryEntry.cs" />
     <Compile Include="Model\Layer.cs" />
+    <Compile Include="ViewModel\IListItemConverter.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\Menu.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\TwoListSynchronizer.cs" />
     <Compile Include="View\EntryView.xaml.cs">
       <DependentUpon>EntryView.xaml</DependentUpon>
     </Compile>

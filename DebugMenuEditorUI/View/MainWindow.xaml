@@ -69,7 +69,7 @@
                     </Grid.ColumnDefinitions>
                     <!-- Left Panel (List of Entries) -->
                     <Grid Margin="5,0,0,0">
-                        <ListBox Grid.Column="0" Margin="0,0,0,24" SelectionMode="Extended"  ItemsSource="{Binding Path=CollViewSource.View}" DisplayMemberPath="DisplayName">
+                        <ListBox Grid.Column="0" Margin="0,0,0,24" SelectionMode="Extended"  ItemsSource="{Binding Path=CollViewSource.View}" DisplayMemberPath="DisplayName" behaviors:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedEntries}">
                             <interactivity:Interaction.Behaviors>
                                 <behaviors:ScrollIntoViewForListBox/>
                             </interactivity:Interaction.Behaviors>
