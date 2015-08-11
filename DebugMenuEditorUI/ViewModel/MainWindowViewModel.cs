@@ -3,6 +3,7 @@ using GameFormatReader.Common;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
@@ -14,6 +15,7 @@ namespace DebugMenuEditorUI.ViewModel
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
         public const string ApplicationName = "Debug Menu Editor";
 
         #region Command Callbacks
@@ -62,7 +64,7 @@ namespace DebugMenuEditorUI.ViewModel
         /// <summary> Add a new entry to the currently selected category. </summary>
         public ICommand OnRequestNewEntry
         {
-            get { return new RelayCommand(x => CreateNewEntry(), x => LoadedFile != null && CategoryViewModel.SelectedCategory != null); }
+            get { return new RelayCommand(x => CreateNewEntry(), x => LoadedFile != null && SelectedCategory != null); }
         }
 
         ///// <summary> Take the currently selected entries from the List and add them to the copy buffer. </summary>
@@ -74,17 +76,18 @@ namespace DebugMenuEditorUI.ViewModel
         /// <summary> Delete the currently selected category. </summary>
         public ICommand OnRequestDeleteCategory
         {
-            get { return new RelayCommand(x => RemoveCategory(), x => LoadedFile != null && CategoryViewModel.SelectedCategory != null); }
+            get { return new RelayCommand(x => RemoveCategory(), x => LoadedFile != null && SelectedCategory != null); }
         }
 
         /// <summary> Delete the currently selected entries from the currently selected category. </summary>
         public ICommand OnRequestDeleteEntries
         {
-            get { return new RelayCommand(x => RemoveEntry(), x=> LoadedFile != null && CategoryViewModel.SelectedEntryViewModel.SelectedEntry != null); }
+            get { return new RelayCommand(x => RemoveEntry(), x=> LoadedFile != null && SelectedEntries.Count > 0); }
         }
 
         #endregion
 
+        #region Properties
         /// <summary>
         /// What is the title of the <see cref="MainWindow"/>? Adjusted based on the name of the currently loaded file.
         /// </summary>
@@ -111,21 +114,34 @@ namespace DebugMenuEditorUI.ViewModel
             }
         }
 
-        public CollectionViewSource CollViewSource { get; set; }
-
+        /// <summary>
+        /// The text to search the category entries by.
+        /// </summary>
         public string SearchFilter
         {
             get { return m_searchFilter; }
             set
             {
                 m_searchFilter = value;
+
                 if (!string.IsNullOrEmpty(m_searchFilter))
+                {
                     AddFilter();
+
+                    // If they're searching for something, we want to set the selected category to null,
+                    // as there is no specific selected category anymore and instead it is showing all
+                    // entries.
+                    SelectedCategory = null;
+                }
 
                 CollViewSource.View.Refresh();
                 OnPropertyChanged("SearchFilter");
             }
         }
+
+        public CollectionViewSource CollViewSource { get; set; }
+
+        
 
         /// <summary>
         /// The currently loaded Debug Menu file, null if not loaded.
@@ -141,11 +157,43 @@ namespace DebugMenuEditorUI.ViewModel
                 if(m_loadedFile != null)
                 {
                     if (LoadedFile.Categories.Count > 0)
-                        CategoryViewModel.SelectedCategory = LoadedFile.Categories[0];
+                        SelectedCategory = LoadedFile.Categories[0];
 
-                    // Update our collection source which contains a list of all entries from all categories.
+                }
+                else
+                {
+                    SelectedCategory = null;
+                }
+
+                OnPropertyChanged("LoadedFile");
+            }
+        }
+
+        public Category SelectedCategory
+        {
+            get { return m_selectedCategory; }
+            set
+            {
+                m_selectedCategory = value;
+
+                // If they're assigning a valid Category to this list, we clear the search filter
+                // so that it doesn't fight with us.
+                if (m_selectedCategory != null)
+                {
+                    // Copy to a List as a BindingList doesn't support filtering (doh...)
+                    List<CategoryEntry> entries = new List<CategoryEntry>(m_selectedCategory.Entries); 
+
+                    // Then filter our collection by only showing items from this one.
+                    CollViewSource.Source = entries;
+
+                    // Wipe out the search filter text, they can't search and select categories at the same time.
+                    SearchFilter = string.Empty;
+                }
+                else
+                {
+                    // If there is no longer a selected category, set the items source to be the entire list from the file.
                     List<CategoryEntry> allEntries = new List<CategoryEntry>();
-                    foreach(var cat in LoadedFile.Categories)
+                    foreach (var cat in LoadedFile.Categories)
                     {
                         foreach (var entry in cat.Entries)
                             allEntries.Add(entry);
@@ -153,28 +201,57 @@ namespace DebugMenuEditorUI.ViewModel
 
                     CollViewSource.Source = allEntries;
                 }
-                else
-                {
-                    CategoryViewModel.SelectedCategory = null;
-                }
 
-                OnPropertyChanged("LoadedFile");
+                OnPropertyChanged("SelectedCategory");
             }
         }
 
-        public CategoryViewModel CategoryViewModel { get; private set;}
+        public ObservableCollection<CategoryEntry> SelectedEntries
+        {
+            get { return m_selectedEntries; }
+            set
+            {
+                m_selectedEntries = value;
+                OnPropertyChanged("SelectedEntries");
+
+                // Only set the selected entry if we have one item selected. Otherwise it sets it to null
+                // as we don't support multi-entry editing.
+                if (SelectedEntries.Count == 1)
+                    SelectedEntry = SelectedEntries[0];
+                else
+                    SelectedEntry = null;
+            }
+        }
+
+        public CategoryEntry SelectedEntry
+        {
+            get { return m_selectedEntry; }
+            set
+            {
+                m_selectedEntry = value;
+                OnPropertyChanged("SelectedEntry");
+            }
+        }
+
+        #endregion
 
         private string m_windowTitle;
         private string m_applicationStatus;
         private string m_searchFilter;
         private Menu m_loadedFile;
+        private Category m_selectedCategory;
+        private ObservableCollection<CategoryEntry> m_selectedEntries;
+        private CategoryEntry m_selectedEntry;
 
         public MainWindowViewModel()
         {
-            CategoryViewModel = new CategoryViewModel(this);
             CollViewSource = new CollectionViewSource();
+            SelectedEntries = new ObservableCollection<CategoryEntry>();
+
             UpdateWindowTitle();
         }
+
+        #region New, Open, Save, Save As, Load
 
         /// <summary> User has requested that we create a new <see cref="Menu"/> file from scratch. Save current, then create new. </summary>
         private void CreateNewFile()
@@ -213,6 +290,7 @@ namespace DebugMenuEditorUI.ViewModel
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine("Exception while loading: {0}", ex.ToString());
                     ApplicationStatus = string.Format("Exception while loading: {0}", ex.ToString());
                 }
                 ApplicationStatus = string.Format("Loaded {0}", ofd.SafeFileName);
@@ -290,26 +368,6 @@ namespace DebugMenuEditorUI.ViewModel
             ApplicationStatus = string.Format("Saved file {0}", LoadedFile.FileName);
         }
 
-        /// <summary> The user has requested that we close the application. Save file (if required). </summary>
-        private void QuitApplication()
-        {
-            // Check if they want to save changes to the file before exiting.
-            ConfirmSaveDesireAndSave();
-            Application.Current.MainWindow.Close();
-        }
-
-        private void UpdateWindowTitle()
-        {
-            if (LoadedFile == null)
-            {
-                WindowTitle = ApplicationName;
-            }
-            else
-            {
-                WindowTitle = string.Format("{0} - {1}", LoadedFile.FileName, ApplicationName);
-            }
-        }
-
         private void ConfirmSaveDesireAndSave()
         {
             if (LoadedFile != null)
@@ -321,6 +379,9 @@ namespace DebugMenuEditorUI.ViewModel
                 }
             }
         }
+        #endregion
+
+        #region Categories
 
         private void AddCategory()
         {
@@ -329,7 +390,7 @@ namespace DebugMenuEditorUI.ViewModel
 
             Category newCategory = new Category();
             LoadedFile.Categories.Add(newCategory);
-            CategoryViewModel.SelectedCategory = newCategory;
+            SelectedCategory = newCategory;
         }
 
         private void RemoveCategory()
@@ -338,7 +399,7 @@ namespace DebugMenuEditorUI.ViewModel
                 throw new InvalidOperationException("Cannot remove category when no file is loaded!");
 
             // Get the index of the currently selected one so that when we remove it, we can select the category one before.
-            int index = LoadedFile.Categories.IndexOf(CategoryViewModel.SelectedCategory);
+            int index = LoadedFile.Categories.IndexOf(SelectedCategory);
             LoadedFile.Categories.RemoveAt(index);
 
             // Removing the category shifts everyone up by one, so if its still in a valid range, use it, otherwise subtract one (ie: was last thing)
@@ -347,35 +408,50 @@ namespace DebugMenuEditorUI.ViewModel
                 index--;
 
             if(index >= 0)
-                CategoryViewModel.SelectedCategory = LoadedFile.Categories[index];
+                SelectedCategory = LoadedFile.Categories[index];
         }
 
+        #endregion
+
+        #region Entries
         private void CreateNewEntry()
         {
-            if (LoadedFile == null || CategoryViewModel.SelectedCategory == null)
+            if (LoadedFile == null || SelectedCategory == null)
                 throw new InvalidOperationException("Cannot add entry to unloaded file or null category!");
 
             CategoryEntry entry = new CategoryEntry();
-            CategoryViewModel.SelectedCategory.Entries.Add(entry);
-            CategoryViewModel.SelectedEntryViewModel.SelectedEntry = entry;
+            SelectedCategory.Entries.Add(entry);
+
+            // Clear the list of currently selected entries and then add the newly created one as the only selected one.
+            SelectedEntries.Clear();
+            SelectedEntries.Add(entry);
         }
 
         private void RemoveEntry()
         {
-            if (LoadedFile == null || CategoryViewModel.SelectedCategory == null)
+            if (LoadedFile == null || SelectedCategory == null)
                 throw new InvalidOperationException("Cannot remove entry from unloaded file or null category!");
 
-            // Get the index of the currently selected one(s)
-            int index = CategoryViewModel.SelectedCategory.Entries.IndexOf(CategoryViewModel.SelectedEntryViewModel.SelectedEntry);
-            CategoryViewModel.SelectedCategory.Entries.RemoveAt(index);
+            if(SelectedEntries.Count > 0)
+            {
+                // Get the index of the currently selected ones - presumably the first.
+                int index = SelectedCategory.Entries.IndexOf(SelectedEntries[0]);
 
-            // It shifted us up by one, so if still in valid range, use it, otherwise we subtract one (ie: it was the last one)
-            if (index >= CategoryViewModel.SelectedCategory.Entries.Count)
-                index--;
+                // Remove all selected
+                foreach(var entry in SelectedEntries)
+                    SelectedCategory.Entries.Remove(entry);
 
-            if (index >= 0)
-                CategoryViewModel.SelectedEntryViewModel.SelectedEntry = CategoryViewModel.SelectedCategory.Entries[index];
+                SelectedEntries.Clear();
+
+                // It shifted us up by one or more, so if still in valid range, use it, otherwise we subtract one (ie: it was the last one)
+                if (index >= SelectedCategory.Entries.Count)
+                    index--;
+
+                if (index >= 0)
+                    SelectedEntries.Add(SelectedCategory.Entries[index]);
+            }
         }
+        #endregion
 
         private void AddFilter()
         {
@@ -395,6 +471,26 @@ namespace DebugMenuEditorUI.ViewModel
                 e.Accepted = true;
             else if (src.MapName.Contains(SearchFilter))
                 e.Accepted = true;
+        }
+
+        /// <summary> The user has requested that we close the application. Save file (if required). </summary>
+        private void QuitApplication()
+        {
+            // Check if they want to save changes to the file before exiting.
+            ConfirmSaveDesireAndSave();
+            Application.Current.MainWindow.Close();
+        }
+
+        private void UpdateWindowTitle()
+        {
+            if (LoadedFile == null)
+            {
+                WindowTitle = ApplicationName;
+            }
+            else
+            {
+                WindowTitle = string.Format("{0} - {1}", LoadedFile.FileName, ApplicationName);
+            }
         }
 
         internal void OnWindowClosing(object sender, CancelEventArgs e)

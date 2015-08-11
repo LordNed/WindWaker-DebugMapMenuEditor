@@ -51,14 +51,14 @@
             </Menu>
         </DockPanel>
         <Grid Margin="0,20,0,20">
-            <ComboBox SelectedItem="{Binding Path=CategoryViewModel.SelectedCategory}" ItemsSource="{Binding Path=LoadedFile.Categories}" DisplayMemberPath="DisplayName" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="10,10,0,0"/>
+            <ComboBox SelectedItem="{Binding Path=SelectedCategory}" ItemsSource="{Binding Path=LoadedFile.Categories}" DisplayMemberPath="DisplayName" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="10,10,0,0"/>
             <Button Content="+" HorizontalAlignment="Left" Margin="180,10,0,0" VerticalAlignment="Top" Height="22" Width="22" Command="{Binding Path=OnRequestNewCategory}"/>
             <Button Content="-" HorizontalAlignment="Left" Margin="212,10,0,0" VerticalAlignment="Top" Height="22" Width="22" Command="{Binding Path=OnRequestDeleteCategory}"/>
             <wpfToolkit:WatermarkTextBox Watermark="Type to search for entries" Text="{Binding Path=SearchFilter, UpdateSourceTrigger=PropertyChanged}" Margin="254,10,42,0" VerticalAlignment="Top"/>
             <Button HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Height="22" Width="22">
                 <TextBlock Text="x" Padding="0,0,0,2"/>
             </Button>
-            <Grid Margin="0,42,0,0" DataContext="{Binding Path=CategoryViewModel}">
+            <Grid Margin="0,42,0,0">
                 <TextBlock Text="Category Name:" Padding="0,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
                 <TextBox HorizontalAlignment="Left" Margin="101,0,0,0" DataContext="{Binding Path=SelectedCategory}" Text="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}" MaxLength="{Binding Path=DisplayNameMaxLength}" VerticalAlignment="Top" Width="133" Height="22"/>
                 <Grid Margin="0,28,0,0" MinHeight="280">
@@ -69,15 +69,14 @@
                     </Grid.ColumnDefinitions>
                     <!-- Left Panel (List of Entries) -->
                     <Grid Margin="5,0,0,0">
-                        <ListBox Grid.Column="0" Margin="0,0,0,24" SelectedItem="{Binding Path=SelectedEntryViewModel.SelectedEntry}" ItemsSource="{Binding Path=Parent.CollViewSource.View}" DisplayMemberPath="DisplayName">
-                            <!-- <ListBox Grid.Column="0" Margin="0,0,0,24" SelectedItem="{Binding Path=SelectedEntryViewModel.SelectedEntry}" ItemsSource="{Binding Path=SelectedCategory.Entries}" DisplayMemberPath="DisplayName"> -->
+                        <ListBox Grid.Column="0" Margin="0,0,0,24" SelectionMode="Extended"  ItemsSource="{Binding Path=CollViewSource.View}" DisplayMemberPath="DisplayName">
                             <interactivity:Interaction.Behaviors>
                                 <behaviors:ScrollIntoViewForListBox/>
                             </interactivity:Interaction.Behaviors>
                         </ListBox>
                         <StackPanel Orientation="Horizontal" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                            <controls:ImageButton Command="{Binding Parent.OnRequestNewEntry}" Width="22" Height="22" NormalImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" Style="{DynamicResource ButtonStyleOne}" ImageSize="22" DisabledImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" HoverImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" PressedImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" Margin="0" />
-                            <Button Content="-" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0" Command="{Binding Parent.OnRequestDeleteEntries}"/>
+                            <controls:ImageButton Command="{Binding OnRequestNewEntry}" Width="22" Height="22" NormalImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" Style="{DynamicResource ButtonStyleOne}" ImageSize="22" DisabledImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" HoverImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" PressedImage="/DebugMenuEditorUI;component/Resources/add_entry_icon.png" Margin="0" />
+                            <Button Content="-" HorizontalAlignment="Left" Height="22" Width="22" Margin="5,0" Command="{Binding OnRequestDeleteEntries}"/>
                         </StackPanel>
                     </Grid>
 
@@ -85,7 +84,7 @@
                     <GridSplitter Grid.Column="1" Width="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
                     <!-- Inspector Panel for Current Selection -->
-                    <view:EntryView Grid.Column="2" Width="Auto" Height="Auto" DataContext="{Binding Path=SelectedEntryViewModel.SelectedEntry}"/>
+                    <view:EntryView Grid.Column="2" Width="Auto" Height="Auto" DataContext="{Binding Path=SelectedEntry}"/>
                 </Grid>
             </Grid>
         </Grid>

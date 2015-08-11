@@ -29,12 +29,12 @@ namespace DebugMenuEditorUI.View
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            using (EndianBinaryReader reader = new EndianBinaryReader(File.Open(@"C:\Users\Matt\Documents\Wind Editor\Menu1_Rextract.dat", FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Endian.Big))
-            {
-                Menu LoadedFile = new Menu();
-                LoadedFile.Load(reader);
-                ((MainWindowViewModel)DataContext).LoadedFile = LoadedFile;
-            }
+            //using (EndianBinaryReader reader = new EndianBinaryReader(File.Open(@"C:\Users\Matt\Documents\Wind Editor\Menu1_Rextract.dat", FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Endian.Big))
+            //{
+            //    Menu LoadedFile = new Menu();
+            //    LoadedFile.Load(reader);
+            //    ((MainWindowViewModel)DataContext).LoadedFile = LoadedFile;
+            //}
 
         }
     }
